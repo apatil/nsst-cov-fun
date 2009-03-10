@@ -16,6 +16,8 @@ __all__ = ['my_st', 'my_gt_fun']
 
 t_gam_fun = my_gt_fun
 
+# TODO: Do this using the thread pool. There should be a version of the code around that does.
+
 def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
     """
     Spatiotemporal covariance function. Converts x and y
