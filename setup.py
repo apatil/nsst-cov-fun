@@ -1,3 +1,8 @@
+# Author: Anand Patil
+# Date: 6 Feb 2009
+# License: Creative Commons BY-NC-SA
+####################################
+
 from setuptools import setup
 from numpy.distutils.misc_util import Configuration
 config = Configuration('st_cov_fun', top_path='.')

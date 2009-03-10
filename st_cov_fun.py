@@ -1,3 +1,8 @@
+# Author: Anand Patil
+# Date: 6 Feb 2009
+# License: Creative Commons BY-NC-SA
+####################################
+
 import pymc as pm
 import numpy as np
 import os

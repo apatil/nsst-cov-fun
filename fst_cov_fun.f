@@ -1,3 +1,8 @@
+! Author: Anand Patil
+! Date: 6 Feb 2009
+! License: Creative Commons BY-NC-SA
+
+
 ! def my_Gt_fun(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
 !     """
 !     Converts two vectors of times, tx and ty, into a 
