@@ -98,8 +98,8 @@ def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
             # Covariance
             stein_spatiotemporal(D,GT,origin_val,cmin=cmin,cmax=cmax,symm=symm)                        
             imul(D,amp*amp,cmin=cmin,cmax=cmax,symm=symm)            
-            if symm:
-                symmetrize(D, cmin=cmin, cmax=cmax)        
+            # if symm:
+            #     symmetrize(D, cmin=cmin, cmax=cmax)        
         
         # Dispatch threads        
         threads = []
@@ -112,6 +112,9 @@ def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
                 print i,threading.activeCount()
                 Pdb(color_scheme='Linux').set_trace()
         [thread.join() for thread in threads]       
+
+    if symm:
+        symmetrize(D, cmin=cmin, cmax=cmax)
     
     # return D
     return D
