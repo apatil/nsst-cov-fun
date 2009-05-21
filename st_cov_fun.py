@@ -114,7 +114,7 @@ def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
         [thread.join() for thread in threads]       
 
     if symm:
-        symmetrize(D, cmin=cmin, cmax=cmax)
+        symmetrize(D)
     
     # return D
     return D
