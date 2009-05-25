@@ -62,8 +62,7 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     if symm is None:
         symm = (x is y)
 
-    n_threads = min(get_threadpool_size(), nx*ny / 10000)
-    
+    n_threads = min(get_threadpool_size(), nx*ny / 10000)    
     if n_threads > 1:
         if not symm:
             bounds = np.linspace(0,ny,n_threads+1)
@@ -96,7 +95,6 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     if symm:
         symmetrize(D)
     
-    # return D
     return D
 
     # def my_GT_fun(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
