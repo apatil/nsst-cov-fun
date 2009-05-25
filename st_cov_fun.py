@@ -9,8 +9,6 @@ import os
 from copy import copy
 # from scipy import interpolate as interp
 from fst_cov_fun import my_gt_fun
-from threading import Thread, Lock
-import threading
 from pymc.gp.cov_funs import imul, symmetrize, stein_spatiotemporal
 from pymc.gp.cov_funs import aniso_geo_rad
 #import MAPdata
@@ -23,7 +21,7 @@ t_gam_fun = my_gt_fun
 
 # TODO: Do this using the thread pool. There should be a version of the code around that does.
 
-def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
+def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     """
     Spatiotemporal covariance function. Converts x and y
     to a matrix of covariances. x and y are assumed to have
@@ -63,55 +61,33 @@ def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
     if symm is None:
         symm = (x is y)
 
-    n_threads = min(n_threads, nx*ny / 10000)        
+    n_threads = min(pm.get_threadpool_size(), nx*ny / 10000)        
     
     if n_threads > 1:
         if not symm:
             bounds = np.linspace(0,ny,n_threads+1)
         else:
             bounds = np.array(np.sqrt(np.linspace(0,ny*ny,n_threads+1)),dtype=int)
-    
-    # Serial version
-    if n_threads <= 1:
+
+    # Target function for threads
+    def targ(D,x,y,symm,inc,ecc,amp,scale,cmin,cmax):
         # Spatial distance
-        aniso_geo_rad(D, x[:,:-1], y[:,:-1], inc, ecc, symm=symm)
-        imul(D,1./scale,symm=symm)
+        aniso_geo_rad(D, x[:,:-1], y[:,:-1], inc, ecc,cmin=cmin,cmax=cmax,symm=symm)    
+        imul(D,1./scale,cmin=cmin,cmax=cmax,symm=symm)            
         # Temporal variogram
-        origin_val = t_gam_fun(GT, x[:,-1], y[:,-1],symm=symm,**kwds)
+        origin_val = t_gam_fun(GT, x[:,-1], y[:,-1],cmin=cmin,cmax=cmax,symm=symm,**kwds)
         # Covariance
-        stein_spatiotemporal(D,GT,origin_val,symm=symm)
-        imul(D,amp*amp,symm=symm)
-        if symm:
-            symmetrize(D)
-                    
-    
-    # Parallel version
+        stein_spatiotemporal(D,GT,origin_val,cmin=cmin,cmax=cmax,symm=symm)                        
+        imul(D,amp*amp,cmin=cmin,cmax=cmax,symm=symm)            
+        # if symm:
+        #     symmetrize(D, cmin=cmin, cmax=cmax)        
+        
+    # Dispatch threads        
+    if n_threads <= 1:
+        targ(D,x,y,symm,inc,ecc,amp,scale,0,-1)
     else:
-        
-        # Target function for threads
-        def targ(cmin,cmax):
-            # Spatial distance
-            aniso_geo_rad(D, x[:,:-1], y[:,:-1], inc, ecc,cmin=cmin,cmax=cmax,symm=symm)    
-            imul(D,1./scale,cmin=cmin,cmax=cmax,symm=symm)            
-            # Temporal variogram
-            origin_val = t_gam_fun(GT, x[:,-1], y[:,-1],cmin=cmin,cmax=cmax,symm=symm,**kwds)
-            # Covariance
-            stein_spatiotemporal(D,GT,origin_val,cmin=cmin,cmax=cmax,symm=symm)                        
-            imul(D,amp*amp,cmin=cmin,cmax=cmax,symm=symm)            
-            # if symm:
-            #     symmetrize(D, cmin=cmin, cmax=cmax)        
-        
-        # Dispatch threads        
-        threads = []
-        for i in xrange(n_threads):
-            new_thread= Thread(target=targ, args=(bounds[i],bounds[i+1]))
-            threads.append(new_thread)
-            try:
-                new_thread.start()
-            except:
-                print i,threading.activeCount()
-                Pdb(color_scheme='Linux').set_trace()
-        [thread.join() for thread in threads]       
+        thread_args = [(D,x,y,symm,inc,ecc,amp,scale,bounds[i],bounds[i+1]) for i in xrange(n_threads)]
+        pm.map_noreturn(targ, thread_args)
 
     if symm:
         symmetrize(D)
