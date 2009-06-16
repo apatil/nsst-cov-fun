@@ -51,6 +51,8 @@ def my_st(x,y,amp,scale,inc,ecc,n_threads=1,symm=None,**kwds):
     tlc=kwds['tlc']
     sd=kwds['sd']
     
+    kwds.pop('n_threads')
+    
     # If parameter values are illegal, just return zeros.
     # This case will be caught by the Potential.
     if -sd >= 1./(-sf*(1-tlc)+tlc):
