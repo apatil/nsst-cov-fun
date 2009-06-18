@@ -50,7 +50,8 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     tlc=kwds['tlc']
     sd=kwds['sd']
     
-    kwds.pop('n_threads')
+    if kwds.has_key('n_threads'):
+        kwds.pop('n_threads')
     
     # If parameter values are illegal, just return zeros.
     # This case will be caught by the Potential.
@@ -85,8 +86,7 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
         #     symmetrize(D, cmin=cmin, cmax=cmax)
     
     # Serial version
-    # if n_threads <= 1:
-    if True:
+    if n_threads <= 1:
         targ(D,GT,x,y,0,-1,symm)
     
     # Parallel version
