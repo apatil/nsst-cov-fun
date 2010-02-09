@@ -99,6 +99,8 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     
     return D
 
+my_st.diag_call = lambda x, *args, **kwds: kwds['amp']**2*np.ones(x.shape[0])
+
     # def my_GT_fun(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
     #     """
     #     Converts two vectors of times, tx and ty, into a 
