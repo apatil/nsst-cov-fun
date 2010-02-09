@@ -22,6 +22,11 @@ t_gam_fun = my_gt_fun
 
 # TODO: Do this using the thread pool. There should be a version of the code around that does.
 
+def add_diag_call(f):
+    f.diag_call = lambda x, *args, **kwds: kwds['amp']**2*np.ones(x.shape[0])
+    return f
+
+@add_diag_call
 def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     """
     Spatiotemporal covariance function. Converts x and y
@@ -98,8 +103,6 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
         symmetrize(D)
     
     return D
-
-my_st.diag_call = lambda x, *args, **kwds: kwds['amp']**2*np.ones(x.shape[0])
 
     # def my_GT_fun(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
     #     """
