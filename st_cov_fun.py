@@ -61,7 +61,7 @@ def my_st(x,y,amp,scale,inc,ecc,symm=None,**kwds):
     # If parameter values are illegal, just return zeros.
     # This case will be caught by the Potential.
     if -sd >= 1./(-sf*(1-tlc)+tlc):
-        return np.zeros((nx,ny))
+        return np.zeros((nx,ny),order='F')
     
     D = np.asmatrix(np.empty((nx,ny),order='F'))
     GT = np.asmatrix(np.empty((nx,ny),order='F'))
