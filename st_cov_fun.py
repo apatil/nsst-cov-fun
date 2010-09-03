@@ -13,8 +13,6 @@ from pymc.gp.cov_funs import imul, symmetrize, stein_spatiotemporal
 from pymc.gp.cov_funs import aniso_geo_rad
 from pymc import get_threadpool_size, map_noreturn
 #import MAPdata
-from IPython import Debugger
-from IPython.Debugger import Pdb
 
 __all__ = ['my_st', 'my_gt_fun']
 
