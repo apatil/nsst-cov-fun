@@ -89,8 +89,8 @@ def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None
         # Temporal variogram
         ddx, ddy = diff_degree(x), diff_degree(y)
         origin_val = t_gam_fun(GT, x[:,-1], y[:,-1], ddx, ddy, cmin=cmin,cmax=cmax,symm=False,**kwds)
-        if np.any(GT<-1):
-            raise pm.ZeroProbability, 'GT < -1.'
+        if np.any(GT<0):
+            raise pm.ZeroProbability, 'GT < 0.'
         # GT = np.add.outer(ddx*.5,ddy*.5)
         # Local properties
         hx, hy = h(x), h(y)
