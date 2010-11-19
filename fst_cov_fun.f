@@ -1,9 +1,9 @@
 ! Author: Anand Patil
-! Date: 6 Feb 2009
+! Date: 19 Nov 2010
 ! License: Creative Commons BY-NC-SA
 
 
-! def my_Gt_fun(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
+! def gtf(tx,ty,scal_t,t_lim_corr,sin_frac,space_diff):
 !     """
 !     Converts two vectors of times, tx and ty, into a 
 !     matrix whose i,j'th entry is gamma(abs(t[i]-t[j])),
@@ -25,7 +25,7 @@
 !     return Gt, 1./(k+c)
 ! 
 
-      SUBROUTINE my_gt_fun(D,x,y,nx,ny,st,tlc,sf,sd,
+      SUBROUTINE gtf(D,x,y,nx,ny,st,tlc,sf,sd,
      *cmin,cmax,symm,origin_val)
 
 cf2py intent(inplace) D
