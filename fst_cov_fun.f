@@ -75,10 +75,6 @@ cf2py threadsafe
                 dt=dabs(x(i)-y(j))
                 D(i,j) = 1/((dexp(-dt/st)*(one-sf) + 
      *                   sf*dcos(2*pi*dt))*c+k)            
-                if (D(i,j).LE.-one) then
-                    print *,'WARNING my_gt_fun wrote <= -1!'
-                    return
-                end if
             end if
           enddo
         enddo
@@ -95,10 +91,6 @@ cf2py threadsafe
                   dt=dabs(x(i)-y(j))
                   D(i,j) = 1/((dexp(-dt/st)*(one-sf) + 
      *                     sf*dcos(2*pi*dt))*c+k)
-                 if (D(i,j).LE.-one) then
-                     print *,'WARNING my_gt_fun wrote <= -1!'
-                     return
-                 end if
               end if
           enddo    
         enddo  
