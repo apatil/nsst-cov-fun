@@ -51,7 +51,7 @@ cf2py threadsafe
       DOUBLE PRECISION ddx(nx), ddy(ny)
       LOGICAL symm
       DOUBLE PRECISION st,tlc,sf,sd,k,c,dt,one,pi
-      DOUBLE PRECISION origin_val
+      DOUBLE PRECISION origin_val(nx,ny)
       
       PARAMETER (pi=3.141592653589793238462643d0)         
 
@@ -68,7 +68,7 @@ cf2py threadsafe
             sd = (ddx(i)+ddy(j))*0.5D0
             k = tlc/sd
             c = one/sd-k
-            origin_val = one/(k+c)
+            origin_val(i,j) = one/(k+c)
             if ((-1.0D0*sd).GE.(one/(tlc-sf*(1.0D0-tlc)))) then
                 D(i,j)=-1.0D0
             else
@@ -88,7 +88,7 @@ cf2py threadsafe
               sd = (ddx(i)+ddy(j))*0.5D0
               k = tlc/sd
               c = one/sd-k
-              origin_val = one/(k+c)
+              origin_val(i,j) = one/(k+c)
               if ((-1.0D0*sd).GE.(one/(tlc-sf*(1.0D0-tlc)))) then
                   D(i,j)=-1.0D0
               else
