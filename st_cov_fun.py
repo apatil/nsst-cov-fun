@@ -37,9 +37,6 @@ def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None
     - geometry: Must be 'aniso_geo_rad' or 'euclidean'.
     - kwds: Passed to t_gam_fun.
     
-    Output value should never drop below -1. This happens when:
-    -1 > -sf*c+k
-    
     References:
     
     Stein, 2005. "Space-Time Covariance Functions". Journal of the American Statistical 
@@ -53,28 +50,19 @@ def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None
     # Allocate 
     nx = x.shape[0]
     ny = y.shape[0]
-    
-    k=kwds['tlc']/kwds['sd']
-    c=1./kwds['sd']-k
-    sf=kwds['sf']
-    tlc=kwds['tlc']
-    sd=kwds['sd']
-    
+        
     if kwds.has_key('n_threads'):
         kwds.pop('n_threads')
     
     if geometry=='aniso_geo_rad':
         inc = kwds.pop('inc')
         ecc = kwds.pop('ecc')
+    else:
+        inc = None
+        ecc = None
     
     if geometry not in ['aniso_geo_rad','euclidean']:
         raise ValueError, 'Geometry %s unknown, must be aniso_geo_rad or euclidean.'%geometry
-        
-    
-    # If parameter values are illegal, just return zeros.
-    # This case will be caught by the Potential.
-    if -sd >= 1./(-sf*(1-tlc)+tlc):
-        return np.zeros((nx,ny),order='F')
     
     D = np.asmatrix(np.empty((nx,ny),order='F'))
     GT = np.asmatrix(np.empty((nx,ny),order='F'))
@@ -99,12 +87,12 @@ def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None
             euclidean(D, x[:,:-1], y[:,:-1], cmin=cmin,cmax=cmax,symm=symm)    
         imul(D,1./scale,cmin=cmin,cmax=cmax,symm=symm)            
         # Temporal variogram
-        origin_val = t_gam_fun(GT, x[:,-1], y[:,-1],cmin=cmin,cmax=cmax,symm=symm,**kwds)
-        # Local properties
         ddx, ddy = diff_degree(x), diff_degree(y)
+        origin_val = t_gam_fun(GT, x[:,-1], y[:,-1], ddx, ddy, cmin=cmin,cmax=cmax,symm=symm,**kwds)
+        # Local properties
         hx, hy = h(x), h(y)
         # Covariance
-        stein_spatiotemporal(D,GT,origin_val,ddx,ddy,hx,hy,cmin=cmin,cmax=cmax,symm=symm)                        
+        nsst(D,GT,origin_val,hx,hy,cmin=cmin,cmax=cmax,symm=symm)                        
         imul(D,amp*amp,cmin=cmin,cmax=cmax,symm=symm)            
         # if symm:
         #     symmetrize(D, cmin=cmin, cmax=cmax)
@@ -123,7 +111,7 @@ def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None
     
     return D
     
-def nsstd(x,amp,scale,inc,ecc,diff_degree,h=default_h):
-    return (h(x)*amp)**2
+def nsstd(x,**kwds):
+    return (kwds['h'](x)*kwds['amp'])**2
         
 nonstationary_spatiotemporal.diag_call = nsstd
