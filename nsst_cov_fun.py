@@ -8,7 +8,7 @@ import numpy as np
 import os
 from copy import copy
 # from scipy import interpolate as interp
-from fst_cov_fun import gtf
+from fnsst_cov_fun import gtf
 from pymc.gp.cov_funs import imul, symmetrize, nsst
 from pymc.gp.cov_funs import aniso_geo_rad, euclidean, default_h
 from pymc import get_threadpool_size, map_noreturn
