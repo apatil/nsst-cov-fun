@@ -14,11 +14,14 @@ from pymc.gp.cov_funs import aniso_geo_rad, euclidean, default_h
 from pymc import get_threadpool_size, map_noreturn
 #import MAPdata
 
-__all__ = ['nonstationary_spatiotemporal', 'gtf']
+__all__ = ['nonstationary_spatiotemporal', 'default_t_gam_fun']
+
+def default_t_gam_fun(d,x,y,ddx,ddy,st,tlc,sf,cmin=0,cmax=-1,symm=0):
+    return gtf(d,x,y,ddx,ddy,st,tlc,sf,cmin=0,cmax=-1,symm=0)
 
 # TODO: Do this using the thread pool. There should be a version of the code around that does.
 
-def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,t_gam_fun=gtf,h=default_h,symm=None,geometry='aniso_geo_rad',**kwds):
+def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,t_gam_fun=default_t_gam_fun,h=default_h,symm=None,geometry='aniso_geo_rad',**kwds):
     """
     Spatiotemporal covariance function. Converts x and y
     to a matrix of covariances. x and y are assumed to have
