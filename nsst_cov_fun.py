@@ -16,11 +16,9 @@ from pymc import get_threadpool_size, map_noreturn
 
 __all__ = ['nonstationary_spatiotemporal', 'gtf']
 
-t_gam_fun = gtf
-
 # TODO: Do this using the thread pool. There should be a version of the code around that does.
 
-def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,h=default_h,symm=None,geometry='aniso_geo_rad',**kwds):
+def nonstationary_spatiotemporal(x,y,amp,scale,diff_degree,t_gam_fun,h=default_h,symm=None,geometry='aniso_geo_rad',**kwds):
     """
     Spatiotemporal covariance function. Converts x and y
     to a matrix of covariances. x and y are assumed to have
